@@ -6,30 +6,37 @@ my_num_vector <- function() {
   value2 <- cos(pi/5)
   value3 <- exp(pi/3)
   value4 <- 1173%%7/19
-  c(formatC(value1, digits = 5, format = "f"),
-    formatC(value2, digits = 5, format = "f"),
-    formatC(value3, digits = 5, format = "f"),
-    formatC(value4, digits = 5, format = "f"))
+  round(c(value1, value2, value3, value4),5)
 }
 
 filter_my_vector <- function(x, leq) {
-  replace(x, x>=leq, NA)
+  replace(x, x >= leq, NA)
 }
+
 
 dot_prod <- function(a,b) {
   sum(a*b)
 }
 
-approx_e <- function(n) {
 
+approx_e <- function(N) {
+  value <- 0
+  for (i in 0:N) {
+    value = value + 1 / factorial(i)
+  }
+  return(round(value, 4))
 }
+
 
 my_magic_matrix <- function(){
-  mm <- matrix(c(4,9,2,3,5,7,8,1,6), nrow = 3, byrow = TRUE)
+  vector <- c(4,9,2,3,5,7,8,1,6)
+  mm <- matrix(vector, ncol = 3, nrow = 3, byrow = TRUE)
+  return(mm)
 }
 
+
 calculate_elements <- function(A) {
-  length(A)
+  return(nrow(A) * ncol(A))
 }
 
 row_to_zero <- function(A, i) {
@@ -52,17 +59,25 @@ my_magic_list <- function() {
 }
 
 change_info <- function(x, text) {
-  x[["info"]] <- text
+  x$info <- text
   return(x)
 }
 
 add_note <- function(x, note) {
-  x[["note"]] <- note
+  x$note <- note
   return(x)
 }
 
 sum_numeric_parts <- function(x) {
-
+  value <- 0
+  for (var in x) {
+    for (var1 in var) {
+      if (is.numeric(var1)) {
+        value <- value + var1
+      }
+    }
+  }
+  return(round(value, 4))
 }
 
 my_data.frame <- function(){
@@ -73,6 +88,14 @@ my_data.frame <- function(){
   framedData <- data.frame(id = ids ,name = names, income = incomes, rich = riches)
   return(framedData)
 }
+
+sort_head <- function(df, var.name, n) {
+  df <- df[order(df[var.name], decreasing = TRUE),]
+  return(df[1:n,])
+}
+
+data(iris)
+sort_head(df = iris, var.name = "Petal.Length", n = 5)
 
 add_median_variable <- function(df, j) {
   medianDf <- median(df)
