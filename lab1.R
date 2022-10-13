@@ -6,7 +6,7 @@ my_num_vector <- function() {
   value2 <- cos(pi/5)
   value3 <- exp(pi/3)
   value4 <- 1173%%7/19
-  round(c(value1, value2, value3, value4),5)
+  return(c(value1, value2, value3, value4))
 }
 
 filter_my_vector <- function(x, leq) {
@@ -24,7 +24,7 @@ approx_e <- function(N) {
   for (i in 0:N) {
     value = value + 1 / factorial(i)
   }
-  return(round(value, 4))
+  return(round(value, digits = N))
 }
 
 
@@ -51,10 +51,10 @@ add_elements_to_matrix <- function(A, x, i, j) {
 }
 
 my_magic_list <- function() {
-  element1 <- info <- "my own list"
+  element1 <- "my own list"
   element2 <- my_num_vector()
   element3 <- my_magic_matrix()
-  magicList <- list(element1,element2, element3)
+  magicList <- list(info = element1, element2, element3)
   return(magicList)
 }
 
@@ -90,14 +90,59 @@ my_data.frame <- function(){
 }
 
 sort_head <- function(df, var.name, n) {
-  df <- df[order(df[var.name], decreasing = TRUE),]
+  df <- df[order(df[,var.name], decreasing = TRUE),]
   return(df[1:n,])
 }
 
-data(iris)
-sort_head(df = iris, var.name = "Petal.Length", n = 5)
-
 add_median_variable <- function(df, j) {
-  medianDf <- median(df)
+  med <- median(df[,j])
+  compared_to_median <- c()
+  for (variable in df[,j]) {
+    if (variable == med) {
+      compared_to_median <- append(compared_to_median, "Median")
+    }else if (variable > med) {
+      compared_to_median <- append(compared_to_median, "Greater")
+    }else {
+      compared_to_median <- append(compared_to_median, "Smaller")
+    }
+  }
+  df$compared_to_median <- compared_to_median
+  return(df)
 }
+
+data(faithful)
+tail(add_median_variable(df = faithful, 2))
+
+analyze_columns <- function(df, j) {
+  pData <- function(index) {
+    mean <- mean(df[,j[index]])
+    med <- median(df[,j[index]])
+    sd <- sd(df[,j[index]])
+    list <- list(mean = mean, median = med, sd = sd)
+    return(unlist(list))
+  }
+
+  if(j[1] < j[2]) {
+    l <- list(pData(j[1]), pData(j[2]))
+    names(l) <- c(colnames(df)[1], colnames(df)[2])
+    l$correlation_matrix <- cor(df[c(j[1],j[2])])
+    return(l)
+  }else {
+    l <- list(pData(j[2]), pData(j[1]))
+    names(l) <- c(colnames(df)[2], colnames(df)[1])
+    l$correlation_matrix <- cor(df[c(j[2],j[1])])
+    return(l)
+  }
+}
+
+# Test cases (arguments)
+data("ChickWeight")
+df1 <- ChickWeight
+j2 <- 1:2
+
+analyze_columns(df = df1, j = j2)
+
+
+
+
 
